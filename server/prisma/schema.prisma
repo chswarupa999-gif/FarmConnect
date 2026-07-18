@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  FARMER
+  DEALER
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+
+model User {
+  id         String   @id @default(cuid())
+  name       String
+  email      String?  @unique
+  phone      String   @unique
+  password   String
+  role       Role
+  language   String   @default("English")
+  district   String?
+  createdAt  DateTime @default(now())
+
+  crops Crop[]
+  buyerOrders Order[] @relation("BuyerOrders")
+
+  farmerOrders Order[] @relation("FarmerOrders")
+}
+
+model Crop {
+  id          String   @id @default(cuid())
+  cropName    String
+  quantity    Float
+  unit        String
+  price       Float
+  location    String
+  description String?
+  image       String?      
+
+  createdAt   DateTime @default(now())
+
+  farmerId    String
+  farmer      User @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  orders Order[]
+}
+
+model Order {
+  id               String      @id @default(cuid())
+
+  quantity         Int
+
+  cropPrice        Float @default(0)
+  deliveryCharge   Float @default(0)
+  gst              Float @default(0)
+  totalPrice       Float
+
+  status           OrderStatus @default(PENDING)
+
+  paymentId        String?
+  paymentStatus    String @default("PENDING")
+
+  createdAt        DateTime @default(now())
+
+  buyerId          String
+  farmerId         String
+  cropId           String
+
+  buyer User @relation("BuyerOrders", fields: [buyerId], references: [id])
+
+  farmer User @relation("FarmerOrders", fields: [farmerId], references: [id])
+
+  crop Crop @relation(fields: [cropId], references: [id])
+}
