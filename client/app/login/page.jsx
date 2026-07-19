@@ -77,10 +77,13 @@ export default function LoginPage() {
             <label>Phone Number</label>
 
             <input
-              type="text"
-              placeholder="Enter phone number"
+              type="tel"
+              placeholder="Enter 10-digit phone number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              required
+              pattern="[0-9]{10}"
+              maxLength={10}
             />
 
           </div>
@@ -94,6 +97,8 @@ export default function LoginPage() {
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
             />
 
           </div>

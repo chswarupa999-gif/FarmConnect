@@ -110,3 +110,23 @@ body{
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+input:required,
+select:required{
+    border:1px solid #ccc;
+}
+
+input:focus:invalid{
+    border:2px solid #d32f2f;
+    outline:none;
+}
+
+input:focus:valid{
+    border:2px solid #2e7d32;
+    outline:none;
+}
+
+.register-btn:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+}

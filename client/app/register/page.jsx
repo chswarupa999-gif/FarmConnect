@@ -102,17 +102,22 @@ export default function RegisterPage() {
               placeholder="Enter full name"
               value={form.name}
               onChange={handleChange}
+              required
+              minLength={3}
             />
           </div>
 
           <div className="input-group">
             <label>Phone Number</label>
             <input
-              type="text"
+              type="tel"
               name="phone"
-              placeholder="Enter phone number"
+              placeholder="Enter 10-digit phone number"
               value={form.phone}
               onChange={handleChange}
+              required
+              pattern="[0-9]{10}"
+              maxLength={10}
             />
           </div>
 
@@ -124,6 +129,7 @@ export default function RegisterPage() {
               placeholder="Enter email"
               value={form.email}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -135,6 +141,8 @@ export default function RegisterPage() {
               placeholder="Enter password"
               value={form.password}
               onChange={handleChange}
+              required
+              minLength={6}
             />
           </div>
 
@@ -160,6 +168,7 @@ export default function RegisterPage() {
               placeholder="Telugu / Hindi / English"
               value={form.language}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -172,11 +181,13 @@ export default function RegisterPage() {
               placeholder="Enter district"
               value={form.district}
               onChange={handleChange}
+              required
             />
           </div>
 
           <button
             className="register-btn"
+            type="submit"
             disabled={loading}
           >
             {loading ? "Registering..." : "Register"}
