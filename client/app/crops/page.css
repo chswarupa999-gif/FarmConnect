@@ -71,3 +71,12 @@ body{
 .card button:hover{
     background:#1b5e20;
 }
+
+button:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+}
+
+.card img{
+    object-fit:cover;
+}

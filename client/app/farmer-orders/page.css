@@ -185,3 +185,17 @@
     }
 
 }
+
+.acceptBtn:disabled,
+.rejectBtn:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+}
+
+.cropImage{
+    object-fit:cover;
+}
+
+.status{
+    font-weight:bold;
+}

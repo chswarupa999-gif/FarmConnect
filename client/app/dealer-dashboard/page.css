@@ -49,3 +49,11 @@ body{
 .card button:hover{
     background:#1b5e20;
 }
+
+.logoutBtn{
+    background:#d32f2f;
+}
+
+.logoutBtn:hover{
+    background:#b71c1c;
+}

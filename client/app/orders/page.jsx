@@ -1,29 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "../services/api";
 import "./page.css";
 
 export default function MyOrdersPage() {
 
+  const router = useRouter();
+
   const [orders, setOrders] = useState([]);
+  const [loadingId, setLoadingId] = useState(null);
 
   useEffect(() => {
+
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    if (!user || user.role !== "DEALER") {
+      router.replace("/login");
+      return;
+    }
+
     fetchOrders();
-  }, []);
+
+  }, [router]);
 
   const fetchOrders = async () => {
+
     try {
+
       const response = await api.get("/orders/my");
+
       setOrders(response.data.orders);
+
     } catch (error) {
+
       console.log(error);
+
     }
+
   };
 
   const payNow = async (orderId) => {
 
     try {
+
+      setLoadingId(orderId);
 
       const { data } = await api.post(
         "/orders/create-payment-order",
@@ -99,6 +127,10 @@ export default function MyOrdersPage() {
         "Payment Failed"
       );
 
+    } finally {
+
+      setLoadingId(null);
+
     }
 
   };
@@ -107,7 +139,9 @@ export default function MyOrdersPage() {
 
     <div className="container">
 
-      <h1 className="title">My Orders</h1>
+      <h1 className="title">
+        My Orders
+      </h1>
 
       {orders.length === 0 ? (
 
@@ -129,22 +163,18 @@ export default function MyOrdersPage() {
               <h2>{order.crop.cropName}</h2>
 
               <p>
-                <strong>Farmer :</strong>{" "}
-                {order.farmer.name}
+                <strong>Farmer :</strong> {order.farmer.name}
               </p>
 
               <p>
-                <strong>Quantity :</strong>{" "}
-                {order.quantity}
+                <strong>Quantity :</strong> {order.quantity}
               </p>
 
               <p>
-                <strong>Total :</strong> ₹
-                {order.totalPrice}
+                <strong>Total :</strong> ₹{order.totalPrice}
               </p>
 
               <p>
-
                 <strong>Payment :</strong>
 
                 <span
@@ -161,7 +191,6 @@ export default function MyOrdersPage() {
               </p>
 
               <p>
-
                 <strong>Status :</strong>
 
                 <span
@@ -189,16 +218,16 @@ export default function MyOrdersPage() {
               )}
 
               {order.status === "ACCEPTED" &&
-                order.paymentStatus ===
-                  "PENDING" && (
+                order.paymentStatus === "PENDING" && (
 
                 <button
                   className="complete-btn"
-                  onClick={() =>
-                    payNow(order.id)
-                  }
+                  disabled={loadingId === order.id}
+                  onClick={() => payNow(order.id)}
                 >
-                  💳 Pay Now
+                  {loadingId === order.id
+                    ? "Processing..."
+                    : "💳 Pay Now"}
                 </button>
 
               )}

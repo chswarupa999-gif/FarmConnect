@@ -1,9 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import "./page.css";
 
 export default function FarmerDashboard() {
+
+  const router = useRouter();
+
+  useEffect(() => {
+
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    if (!user || user.role !== "FARMER") {
+      router.replace("/login");
+      return;
+    }
+
+  }, [router]);
+
   return (
     <div className="dashboard">
 
@@ -14,6 +36,7 @@ export default function FarmerDashboard() {
       <div className="cards">
 
         <Link href="/my-crops" className="card">
+
           <h2>🌱 My Crops</h2>
 
           <p>
@@ -23,9 +46,11 @@ export default function FarmerDashboard() {
           <button className="cardBtn">
             Manage Crops →
           </button>
+
         </Link>
 
         <Link href="/farmer-orders" className="card">
+
           <h2>📦 Orders</h2>
 
           <p>
@@ -35,6 +60,7 @@ export default function FarmerDashboard() {
           <button className="cardBtn">
             View Orders →
           </button>
+
         </Link>
 
       </div>

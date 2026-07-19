@@ -1,27 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "../services/api";
 import "./page.css";
 
 export default function CropsPage() {
+
   const [crops, setCrops] = useState([]);
+  const [loadingId, setLoadingId] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
+
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    if (!user || user.role !== "DEALER") {
+      router.replace("/login");
+      return;
+    }
+
     fetchCrops();
-  }, []);
+
+  }, [router]);
 
   const fetchCrops = async () => {
+
     try {
+
       const response = await api.get("/crops");
+
       setCrops(response.data.crops);
+
     } catch (error) {
+
       console.log(error);
+
     }
+
   };
 
   const requestOrder = async (cropId) => {
+
     try {
+
+      setLoadingId(cropId);
 
       const response = await api.post("/orders", {
         cropId,
@@ -39,10 +69,16 @@ export default function CropsPage() {
         "Unable to send request"
       );
 
+    } finally {
+
+      setLoadingId(null);
+
     }
+
   };
 
   return (
+
     <div className="container">
 
       <h1>Available Crops</h1>
@@ -80,9 +116,12 @@ export default function CropsPage() {
             <p>{crop.description}</p>
 
             <button
+              disabled={loadingId === crop.id}
               onClick={() => requestOrder(crop.id)}
             >
-              📩 Request Order
+              {loadingId === crop.id
+                ? "Sending..."
+                : "📩 Request Order"}
             </button>
 
           </div>
@@ -92,5 +131,7 @@ export default function CropsPage() {
       </div>
 
     </div>
+
   );
+
 }

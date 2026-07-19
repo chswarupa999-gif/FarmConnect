@@ -95,3 +95,9 @@ body{
 .register-link a:hover{
     color:#1B5E20;
 }
+
+.login-btn:disabled,
+.register-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

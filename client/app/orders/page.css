@@ -73,3 +73,8 @@
     color:gray;
     margin-top:100px;
 }
+
+.complete-btn:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+}

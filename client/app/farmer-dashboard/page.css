@@ -57,3 +57,11 @@
 .cardBtn:hover{
     background:#1B5E20;
 }
+
+.logoutBtn{
+    background:#d32f2f;
+}
+
+.logoutBtn:hover{
+    background:#b71c1c;
+}

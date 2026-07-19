@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "../services/api";
 import "./page.css";
 
 export default function MyCrops() {
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+
   const [crops, setCrops] = useState([]);
 
   const [form, setForm] = useState({
@@ -21,8 +27,23 @@ export default function MyCrops() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
+
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    if (!user || user.role !== "FARMER") {
+      router.replace("/login");
+      return;
+    }
+
     fetchMyCrops();
-  }, []);
+
+  }, [router]);
 
   const fetchMyCrops = async () => {
     try {
@@ -55,7 +76,41 @@ export default function MyCrops() {
   };
 
   const handleSubmit = async () => {
+
+    if (!form.cropName.trim()) {
+      alert("Please enter crop name.");
+      return;
+    }
+
+    if (!form.quantity || Number(form.quantity) <= 0) {
+      alert("Please enter a valid quantity.");
+      return;
+    }
+
+    if (!form.unit.trim()) {
+      alert("Please enter unit.");
+      return;
+    }
+
+    if (!form.price || Number(form.price) <= 0) {
+      alert("Please enter a valid price.");
+      return;
+    }
+
+    if (!form.location.trim()) {
+      alert("Please enter location.");
+      return;
+    }
+
+    if (!editingId && !image) {
+      alert("Please upload crop image.");
+      return;
+    }
+
     try {
+
+      setLoading(true);
+
       const formData = new FormData();
 
       formData.append("cropName", form.cropName);
@@ -70,6 +125,7 @@ export default function MyCrops() {
       }
 
       if (editingId) {
+
         await api.put(`/crops/${editingId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -77,7 +133,9 @@ export default function MyCrops() {
         });
 
         alert("Crop Updated");
+
       } else {
+
         await api.post("/crops", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -85,16 +143,27 @@ export default function MyCrops() {
         });
 
         alert("Crop Added");
+
       }
 
       resetForm();
       fetchMyCrops();
+
     } catch (err) {
+
       console.log(err);
+
+      alert(err.response?.data?.message || "Something went wrong");
+
+    } finally {
+
+      setLoading(false);
+
     }
   };
 
   const editCrop = (crop) => {
+
     setEditingId(crop.id);
 
     setForm({
@@ -105,20 +174,27 @@ export default function MyCrops() {
       location: crop.location,
       description: crop.description || "",
     });
+
   };
 
   const deleteCrop = async (id) => {
+
     if (!confirm("Delete this crop?")) return;
 
     try {
+
       await api.delete(`/crops/${id}`);
 
       alert("Deleted");
 
       fetchMyCrops();
+
     } catch (err) {
+
       console.log(err);
+
     }
+
   };
 
   return (
@@ -175,8 +251,13 @@ export default function MyCrops() {
           onChange={(e) => setImage(e.target.files[0])}
         />
 
-        <button onClick={handleSubmit}>
-          {editingId ? "Update Crop" : "Add Crop"}
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading
+            ? (editingId ? "Updating..." : "Adding...")
+            : (editingId ? "Update Crop" : "Add Crop")}
         </button>
 
       </div>

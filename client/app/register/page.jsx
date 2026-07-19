@@ -6,7 +6,6 @@ import api from "../services/api";
 import "./page.css";
 
 export default function RegisterPage() {
-
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -16,6 +15,8 @@ export default function RegisterPage() {
     language: "",
     district: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({
@@ -27,30 +28,72 @@ export default function RegisterPage() {
   const register = async (e) => {
     e.preventDefault();
 
+    if (!form.name.trim()) {
+      alert("Please enter your full name.");
+      return;
+    }
+
+    if (!/^[0-9]{10}$/.test(form.phone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    if (!form.email.trim()) {
+      alert("Please enter your email.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(form.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    if (form.password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (!form.language.trim()) {
+      alert("Please enter your language.");
+      return;
+    }
+
+    if (!form.district.trim()) {
+      alert("Please enter your district.");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       await api.post("/auth/register", form);
 
       alert("Registration Successful");
 
       window.location.href = "/login";
-
     } catch (err) {
       console.log(err);
-      alert("Registration Failed");
+
+      if (err.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("Registration Failed");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="register-container">
-
       <div className="register-card">
-
         <h1>🌾 FarmConnect</h1>
 
         <h2>Create Account</h2>
 
         <form onSubmit={register}>
-
           <div className="input-group">
             <label>Full Name</label>
             <input
@@ -106,7 +149,6 @@ export default function RegisterPage() {
               <option value="FARMER">Farmer</option>
               <option value="DEALER">Dealer</option>
             </select>
-
           </div>
 
           <div className="input-group">
@@ -119,7 +161,6 @@ export default function RegisterPage() {
               value={form.language}
               onChange={handleChange}
             />
-
           </div>
 
           <div className="input-group">
@@ -132,22 +173,21 @@ export default function RegisterPage() {
               value={form.district}
               onChange={handleChange}
             />
-
           </div>
 
-          <button className="register-btn">
-            Register
+          <button
+            className="register-btn"
+            disabled={loading}
+          >
+            {loading ? "Registering..." : "Register"}
           </button>
-
         </form>
 
         <p className="login-link">
           Already have an account?
           <Link href="/login"> Login</Link>
         </p>
-
       </div>
-
     </div>
   );
 }
