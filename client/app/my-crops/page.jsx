@@ -200,6 +200,13 @@ export default function MyCrops() {
   return (
     <div className="container">
 
+      <button
+        className="backBtn"
+        onClick={() => router.push("/farmer-dashboard")}
+      >
+        ← Dashboard
+      </button>
+
       <h1>My Crops</h1>
 
       <div className="form">

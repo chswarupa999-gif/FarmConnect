@@ -139,6 +139,13 @@ export default function MyOrdersPage() {
 
     <div className="container">
 
+      <button
+        className="backBtn"
+        onClick={() => router.push("/dealer-dashboard")}
+      >
+        ← Dashboard
+      </button>
+
       <h1 className="title">
         My Orders
       </h1>

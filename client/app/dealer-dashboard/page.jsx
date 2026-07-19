@@ -51,6 +51,13 @@ export default function Dashboard() {
 
       <div className="card">
 
+        <button
+          className="backBtn"
+          onClick={() => router.back()}
+        >
+          ← Back
+        </button>
+
         <h1>Dealer Dashboard</h1>
 
         <h2>Welcome, {user?.name}</h2>
@@ -60,13 +67,13 @@ export default function Dashboard() {
         <button
           onClick={() => router.push("/crops")}
         >
-          Browse Crops
+          🌾 Browse Crops
         </button>
 
         <button
           onClick={() => router.push("/orders")}
         >
-          My Orders
+          📦 My Orders
         </button>
 
         <button
@@ -81,4 +88,5 @@ export default function Dashboard() {
     </div>
 
   );
+
 }

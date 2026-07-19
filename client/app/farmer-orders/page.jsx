@@ -82,6 +82,13 @@ export default function FarmerOrdersPage() {
 
     <div className="container">
 
+      <button
+        className="backBtn"
+        onClick={() => router.push("/farmer-dashboard")}
+      >
+        ← Dashboard
+      </button>
+
       <h1 className="title">
         🌾 Farmer Orders
       </h1>

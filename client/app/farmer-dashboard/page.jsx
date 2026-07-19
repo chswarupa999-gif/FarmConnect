@@ -26,12 +26,41 @@ export default function FarmerDashboard() {
 
   }, [router]);
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
+
   return (
+
     <div className="dashboard">
 
-      <h1 className="title">
-        🌾 Farmer Dashboard
-      </h1>
+      <div className="header">
+
+        <button
+          className="backBtn"
+          onClick={() => router.back()}
+        >
+          ← Back
+        </button>
+
+        <h1 className="title">
+          🌾 Farmer Dashboard
+        </h1>
+
+        <button
+          className="logoutBtn"
+          onClick={logout}
+        >
+          Logout
+        </button>
+
+      </div>
+
+      <p className="subtitle">
+        Manage your crops and orders easily.
+      </p>
 
       <div className="cards">
 
@@ -40,7 +69,7 @@ export default function FarmerDashboard() {
           <h2>🌱 My Crops</h2>
 
           <p>
-            Add, Edit and Delete your crops
+            Add, edit and delete your crop listings.
           </p>
 
           <button className="cardBtn">
@@ -54,7 +83,7 @@ export default function FarmerDashboard() {
           <h2>📦 Orders</h2>
 
           <p>
-            Accept or Reject buyer requests
+            Accept or reject dealer requests.
           </p>
 
           <button className="cardBtn">
@@ -66,5 +95,7 @@ export default function FarmerDashboard() {
       </div>
 
     </div>
+
   );
+
 }

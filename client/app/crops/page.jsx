@@ -81,6 +81,13 @@ export default function CropsPage() {
 
     <div className="container">
 
+      <button
+        className="backBtn"
+        onClick={() => router.push("/dealer-dashboard")}
+      >
+        ← Dashboard
+      </button>
+
       <h1>Available Crops</h1>
 
       <div className="grid">
